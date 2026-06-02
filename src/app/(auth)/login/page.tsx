@@ -85,12 +85,6 @@ export default function LoginPage() {
               <label htmlFor="password" className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Password
               </label>
-              <a
-                href="#forgot"
-                className="text-xs text-primary font-medium hover:underline tracking-wide"
-              >
-                Forgot password?
-              </a>
             </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground/70">
@@ -113,10 +107,15 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
+            <div className="text-right">
+              <a href="#forgot-password" className="text-xs text-primary hover:underline">
+                Forgot password?
+              </a>
+            </div>
           </div>
 
           {/* Remember Me Checkbox */}
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <input
               id="remember-me"
               type="checkbox"
@@ -125,7 +124,7 @@ export default function LoginPage() {
             <label htmlFor="remember-me" className="ml-2 text-sm text-muted-foreground select-none">
               Keep me logged in
             </label>
-          </div>
+          </div> */}
 
           {/* Primary Submit Button */}
           <button
