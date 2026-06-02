@@ -3,15 +3,58 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 import { GithubIcon, GoogleIcon } from "@/components/brand-icons";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+import api from "@/lib/api";
+import { ENDPOINTS } from "@/lib/constants";
+import { useAuthStore } from "@/lib/store/authStore";
+import { ApiResponse } from "@/types";
+import { useRouter } from "next/navigation";
+
+
+const loginSchema = z.object({
+  email: z.email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [serverError, setServerError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle authentication logic here
+  const {setAuth} = useAuthStore();
+  const router = useRouter();
+
+  const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: LoginFormValues) => {
+    setServerError(null);
+
+    try {
+      const res = await api.post(`${ENDPOINTS.auth.login}`, data);
+      if(res.data.success){
+        setAuth(
+          res.data.data.user,
+          res.data.data.accessToken,
+          res.data.data.refreshToken
+        );
+        toast.success("Login successful");
+        router.push("/overview");
+      }
+    } catch (error:any) {
+      const fallbackError = error.response?.data?.message || "Something went wrong, please try again";
+      setServerError(fallbackError);
+      toast.error(fallbackError);
+    }
   };
 
   return (
@@ -59,7 +102,7 @@ export default function LoginPage() {
         </div>
 
         {/* Credentials Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="space-y-1.5">
             <label htmlFor="email" className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Email address
@@ -71,13 +114,16 @@ export default function LoginPage() {
               <input
                 id="email"
                 type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
+                {...register("email")}
                 className="w-full pl-10 pr-4 py-2 rounded-md border border-border bg-background text-foreground placeholder:text-muted-foreground/50 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               />
             </div>
+            {errors.email && (
+              <p className="text-xs font-medium text-destructive animate-in fade-in-50 duration-200">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -93,10 +139,8 @@ export default function LoginPage() {
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
+                {...register("password")}
                 className="w-full pl-10 pr-10 py-2 rounded-md border border-border bg-background text-foreground placeholder:text-muted-foreground/50 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               />
               <button
@@ -107,8 +151,15 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
-            <div className="text-right">
-              <a href="#forgot-password" className="text-xs text-primary hover:underline">
+            <div className="flex items-center justify-between min-h-[20px] pt-0.5">
+              {errors.password ? (
+                <p className="text-xs font-medium text-destructive animate-in fade-in-50 duration-200">
+                  {errors.password.message}
+                </p>
+              ) : (
+                <div />
+              )}
+              <a href="#forgot-password" className="text-xs text-primary hover:underline tracking-wide font-medium">
                 Forgot password?
               </a>
             </div>
@@ -142,6 +193,8 @@ export default function LoginPage() {
             Create an account
           </a>
         </p>
+
+        <Toaster/>
       </div>
     </div>
   );
