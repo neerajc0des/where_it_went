@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import api from "@/lib/api";
-import { ENDPOINTS } from "@/lib/constants";
+import { API_BASE_URL, ENDPOINTS } from "@/lib/constants";
 import { useAuthStore } from "@/lib/store/authStore";
 import { ApiResponse } from "@/types";
 import { useRouter } from "next/navigation";
@@ -57,6 +57,11 @@ export default function LoginPage() {
     }
   };
 
+  const handleGoogleLogin = ()=>{
+    // router.push(API_BASE_URL+ENDPOINTS.auth.google);
+    window.location.href =`${API_BASE_URL}${ENDPOINTS.auth.google}`;
+  }
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-md space-y-8 bg-secondary p-8 rounded-xl border border-border shadow-sm">
@@ -78,6 +83,7 @@ export default function LoginPage() {
         <div className="grid grid-cols-2 gap-3">
           <button
             type="button"
+            onClick={handleGoogleLogin}
             className="flex items-center justify-center gap-2 px-4 py-2.5 border border-border bg-background rounded-md text-sm font-medium text-foreground hover:bg-accent transition-colors cursor-pointer"
           >
             <GoogleIcon className="h-4 w-4" />
