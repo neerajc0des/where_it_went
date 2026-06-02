@@ -143,6 +143,10 @@ export default function LoginPage() {
           </a>
         </p>
       </div>
+
+      <p>
+        {process.env.NEXT_PUBLIC_API_BASE_URL}
+      </p>
     </div>
   );
 }
