@@ -21,6 +21,15 @@ export const ENDPOINTS = {
 } as const;
 
 
+export const STORAGE_KEYS = {
+  accessToken:  'accessToken',
+  refreshToken: 'refreshToken',
+  user:         'user',
+} as const;
+
+export const MAX_SESSIONS = 4;
+
+
 export const MOOD_EMOJI: Record<string, string> = {
   HAPPY:   '😊',
   NEUTRAL: '😐',
