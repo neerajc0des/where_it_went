@@ -38,7 +38,8 @@
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.522 0.22 271.72);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent: oklch(67.659% 0.16781 37.481 / 0.274);
+  --sidebar-hover-accent: oklch(40.596% 0.22102 279.091 / 0.304);
   --sidebar-accent-foreground: oklch(16.516% 0.00626 285.66);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
@@ -72,11 +73,12 @@
   --chart-4: oklch(46.904% 0.18411 284.602);
   --chart-5: oklch(45.166% 0.19203 282.99);
   
-  --sidebar: oklch(16.516% 0.00626 285.66);
+  --sidebar: oklch(17.853% 0.00409 285.914);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.62 0.19 271.72);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(19.02% 0.01014 294.545);
+  --sidebar-accent: oklch(67.659% 0.16781 37.481 / 0.274);
+  --sidebar-hover-accent: oklch(100% 0.00011 271.152 / 0.263);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
@@ -85,6 +87,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-sidebar-hover-accent: var(--sidebar-hover-accent);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);

@@ -11,7 +11,6 @@ export default function DashboardLayout({
 }) {
   const [mounted, setMounted] = React.useState(false);
 
-  // Prevent local state hydration mismatches between server and client runs
   React.useEffect(() => {
     setMounted(true);
   }, []);
@@ -27,27 +26,35 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full bg-sidebar/50">
-        {/* The responsive drawer engine */}
         <AppSidebar />
         
-        {/* Core application view frame */}
         <div className="flex flex-1 flex-col overflow-hidden bg-background">
-          {/* Header Action Navbar bar */}
-          <header className="flex h-14 items-center gap-4 border-b border-border bg-background px-6">
-            {/* The trigger auto-toggles collapsible icon mode on desktop, and drawers over mobile viewports */}
-            <SidebarTrigger className="-ml-1" />
-            {/* <div className="h-4 w-[1px] bg-border" />
-            <h1 className="text-sm font-medium text-muted-foreground">
-              Workspace
-            </h1> */}
-          </header>
-
-          {/* Sub-page view content injection wrapper */}
-          <main className="flex-1 overflow-y-auto p-6 md:p-8">
-            <div className="mx-auto max-w-6xl">
-              {children}
+         <header className="flex h-14 items-center justify-between border-b border-border bg-sidebar px-4 md:hidden">
+           <SidebarTrigger className="h-9 w-9 rounded-lg text-sidebar-foreground/70 cursor-pointer" />
+           <div className="flex flex-col items-center gap-4 py-2">
+            <div className="h-10 w-10 rounded-full overflow-hidden border border-sidebar-border shadow-xs bg-zinc-800 text-white flex items-center justify-center font-bold text-xs capitalize">
+              {"U"}
             </div>
-          </main>
+          </div>
+         </header>
+
+          <div className="flex flex-1 flex-col overflow-hidden bg-background">
+            <header className="flex h-14 text-xl items-center justify-between border-b border-border md:hidden">
+              Heading
+            </header>
+
+            <div className="hidden md:flex h-14 items-center px-8 border-b border-border/40">
+              <h1 className="text-lg font-semibold capitalize text-muted-foreground tracking-wide">
+                Dashboard Overview
+              </h1>
+            </div>
+
+            <main className="flex-1 overflow-y-auto p-6 md:p-8">
+              <div className="mx-auto">
+                {children}
+              </div>
+            </main>
+          </div>
         </div>
       </div>
     </SidebarProvider>
