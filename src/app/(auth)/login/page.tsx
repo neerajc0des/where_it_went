@@ -30,7 +30,7 @@ export default function LoginPage() {
   const {setAuth} = useAuthStore();
   const router = useRouter();
 
-  const {register,reset, handleSubmit, formState: { errors, isSubmitting }} = useForm<LoginFormValues>({
+  const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -58,6 +58,8 @@ export default function LoginPage() {
       toast.error(fallbackError);
     }
   };
+
+  
 
   const handleGoogleLogin = ()=>{
     // router.push(API_BASE_URL+ENDPOINTS.auth.google);
@@ -160,9 +162,9 @@ export default function LoginPage() {
               ) : (
                 <div />
               )}
-              <a href="#forgot-password" className="text-xs text-primary hover:underline tracking-wide font-medium">
+              <Link href="/forgot-password" className="text-xs text-primary hover:underline tracking-wide font-medium">
                 Forgot password?
-              </a>
+              </Link>
             </div>
           </div>
 
