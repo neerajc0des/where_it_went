@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider"; 
 import { Toaster } from "sonner";
+import GlobalLoader from "@/components/global-loader";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -41,6 +42,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          {/* <GlobalLoader/> */}
           <Toaster closeButton position="top-center" />
         </ThemeProvider>
       </body>

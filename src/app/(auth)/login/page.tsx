@@ -1,22 +1,23 @@
 "use client";
 
 import React, { useState } from "react";
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Loader, Loader2 } from "lucide-react";
 import { GithubIcon, GoogleIcon } from "@/components/brand-icons";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import api from "@/lib/api";
 import { API_BASE_URL, ENDPOINTS } from "@/lib/constants";
 import { useAuthStore } from "@/lib/store/authStore";
 import { ApiResponse } from "@/types";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useUIStore } from "@/lib/store/uiStore";
 
 
 const loginSchema = z.object({
-  email: z.email("Please enter a valid email address"),
+  email: z.email({ error: "Please enter a valid email address" }),
   password: z.string().min(1, "Password is required"),
 });
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -24,11 +25,12 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const isLoading = useUIStore((state) => state.isLoading);
 
   const {setAuth} = useAuthStore();
   const router = useRouter();
 
-  const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm<LoginFormValues>({
+  const {register,reset, handleSubmit, formState: { errors, isSubmitting }} = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -80,21 +82,14 @@ export default function LoginPage() {
         </div>
 
         {/* Social Authentication Buttons */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <button
             type="button"
             onClick={handleGoogleLogin}
             className="flex items-center justify-center gap-2 px-4 py-2.5 border border-border bg-background rounded-md text-sm font-medium text-foreground hover:bg-accent transition-colors cursor-pointer"
           >
             <GoogleIcon className="h-4 w-4" />
-            <span>Google</span>
-          </button>
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2 px-4 py-2.5 border border-border bg-background rounded-md text-sm font-medium text-foreground hover:bg-accent transition-colors cursor-pointer"
-          >
-            <GithubIcon className="h-4 w-4" />
-            <span>GitHub</span>
+            <span>Login with Google</span>
           </button>
         </div>
 
@@ -189,18 +184,21 @@ export default function LoginPage() {
             className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground font-medium rounded-md shadow-sm hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer text-sm"
           >
             <span>Sign in to account</span>
-            <ArrowRight className="h-4 w-4" />
+            {isLoading ?
+             <Loader2 className="h-4 w-4 animate-spin text-primary-foreground" />
+            :
+              <ArrowRight className="h-4 w-4" />
+            }
           </button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground pt-2">
           Don't have an account?{" "}
-          <a href="#signup" className="text-primary font-semibold hover:underline">
+          <Link href="/register" className="text-primary font-semibold hover:underline">
             Create an account
-          </a>
+          </Link>
         </p>
 
-        <Toaster/>
       </div>
     </div>
   );

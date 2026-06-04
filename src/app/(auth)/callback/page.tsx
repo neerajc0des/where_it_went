@@ -43,7 +43,7 @@ const page = () => {
                 );
                 router.replace("/overview");
                 } catch (error:any) {
-                    console.log(error);
+                    // console.log(error);
                     toast.error(error.response?.data?.message || "Google login failed, please try again");
                     router.replace("/login");
                 }

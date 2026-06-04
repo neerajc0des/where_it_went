@@ -39,7 +39,7 @@ export default function DashboardLayout({
          </header>
 
           <div className="flex flex-1 flex-col overflow-hidden bg-background">
-            <header className="flex h-14 text-xl items-center justify-between border-b border-border md:hidden">
+            <header className="flex h-14 px-6 text-xl items-center justify-between border-b border-border md:hidden">
               Heading
             </header>
 

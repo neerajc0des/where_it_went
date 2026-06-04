@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL, STORAGE_KEYS } from "./constants";
+import { useUIStore } from "@/lib/store/uiStore";
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -9,8 +10,8 @@ const api = axios.create({
 })
 
 // attatching access token to every request 
-
 api.interceptors.request.use((config) => {
+    useUIStore.getState().setIsLoading(true);
     const token = localStorage.getItem(STORAGE_KEYS.accessToken);
     if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;
@@ -18,12 +19,12 @@ api.interceptors.request.use((config) => {
     return config;
 },
 (error) => {    
+    useUIStore.getState().setIsLoading(false);
     return Promise.reject(error);
 }
 )
 
 // response interceptor, handling 401 and refreshing token
-
 let isRefreshing = false;
 interface QueuedRequest {
   resolve: (token: string) => void;
@@ -43,13 +44,16 @@ const processQ = (err:any, token:string |null = null)=>{
     failedQueue = [];
 }
 
-api.interceptors.response.use((response)=>
-    response,
+api.interceptors.response.use((response)=> {
+    useUIStore.getState().setIsLoading(false);
+    return response;
+},
     async (err)=>{
         const originalReq = err.config;
 
         // if there is no 401 and req is already rejected
         if(err.response?.status != 401 || originalReq._retry){
+            useUIStore.getState().setIsLoading(false);
             return Promise.reject(err);
         }
 
@@ -61,7 +65,8 @@ api.interceptors.response.use((response)=>
                 originalReq.headers.Authorization = `Bearer ${token}`;
                 return api(originalReq);
             }).catch((err)=>{
-                Promise.reject(err);
+                useUIStore.getState().setIsLoading(false);
+                return Promise.reject(err);
             })
         }
 
@@ -71,6 +76,7 @@ api.interceptors.response.use((response)=>
         const refreshToken = localStorage.getItem(STORAGE_KEYS.refreshToken);
         if (!refreshToken) {
             handleLogout();
+            useUIStore.getState().setIsLoading(false);
             return Promise.reject(err); 
         }
 
@@ -86,7 +92,7 @@ api.interceptors.response.use((response)=>
             localStorage.setItem(STORAGE_KEYS.refreshToken, newRefreshToken);
 
             // updating auth headers 
-            originalReq.headers.Authorization = `Bearere ${accessToken}`;
+            originalReq.headers.Authorization = `Bearer ${accessToken}`;
 
             // processing queued requests 
             processQ(null, accessToken);
@@ -97,6 +103,7 @@ api.interceptors.response.use((response)=>
         } catch (refreshErr) {
             processQ(refreshErr, null);
             handleLogout();
+            useUIStore.getState().setIsLoading(false);
             return Promise.reject(refreshErr);
         } finally {
             isRefreshing = false;

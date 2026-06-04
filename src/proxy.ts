@@ -6,7 +6,8 @@ const publicRoutes = [
   '/forgot-password',
   '/reset-password',
   '/verify-email',  
-  '/callback'
+  '/callback',
+  '/verify-email',
 ];
 
 const authRoutes = [
