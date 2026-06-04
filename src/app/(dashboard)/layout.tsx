@@ -3,6 +3,17 @@
 import * as React from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { usePathname } from "next/navigation";
+
+
+const HEADER_TITLES: Record<string, string> = {
+    "/overview": "Dashboard",
+    "/transactions": "Transactions",
+    "/accounts": "Accounts",
+    "/categories": "Categories",
+    "/moods": "Mood Logs",
+    "/recap": "Spending Recap",
+  };
 
 export default function DashboardLayout({
   children,
@@ -10,10 +21,13 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [mounted, setMounted] = React.useState(false);
-
+  const pathname = usePathname();
+  
   React.useEffect(() => {
     setMounted(true);
   }, []);
+  
+  const activeTitle = HEADER_TITLES[pathname] || "Dashboard";
 
   if (!mounted) {
     return (
@@ -22,6 +36,9 @@ export default function DashboardLayout({
       </div>
     );
   }
+
+  
+
 
   return (
     <SidebarProvider>
@@ -40,12 +57,12 @@ export default function DashboardLayout({
 
           <div className="flex flex-1 flex-col overflow-hidden bg-background">
             <header className="flex h-14 px-6 text-xl items-center justify-between border-b border-border md:hidden">
-              Heading
+              {activeTitle}
             </header>
 
             <div className="hidden md:flex h-14 items-center px-8 border-b border-border/40">
               <h1 className="text-lg font-semibold capitalize text-muted-foreground tracking-wide">
-                Dashboard Overview
+                {activeTitle}
               </h1>
             </div>
 

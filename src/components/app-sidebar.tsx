@@ -10,7 +10,10 @@ import {
   LogOut, 
   Settings,
   Sun,
-  Moon
+  Moon,
+  Wallet,
+  Smile,
+  FileClock
 } from "lucide-react";
 
 import { useAuthStore } from "@/lib/store/authStore";
@@ -30,6 +33,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
@@ -52,7 +56,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigation = [
     { name: "Overview", href: "/overview", icon: LayoutDashboard },
     { name: "Transactions", href: "/transactions", icon: ArrowLeftRight },
-    { name: "Categories", href: "/categories", icon: Tags }, // Matches your current folder naming
+    { name: "Accounts", href: "/accounts", icon: Wallet }, 
+    { name: "Categories", href: "/categories", icon: Tags }, 
+    { name: "Moods", href: "/moods", icon: Smile }, 
+    { name: "Recaps", href: "/recaps", icon: FileClock }, 
   ];
 
   return (
@@ -120,19 +127,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter className="p-3">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-4 py-2">
-            <button
+            {/* 1. Theme Toggle (Collapsed) */}
+            <Tooltip>
+              <TooltipTrigger
                 onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                className="relative p-2 text-sidebar-foreground/70 hover:bg-sidebar-hover-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors cursor-pointer"
+                className="relative p-2 text-sidebar-foreground/70 hover:bg-sidebar-hover-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors cursor-pointer focus-visible:outline-none"
               >
                 {mounted && resolvedTheme === "dark" ? (
                   <Sun className="h-5 w-5 text-amber-500" />
                 ) : (
                   <Moon className="h-5 w-5 text-indigo-500" />
                 )}
-              </button>
-            <div className="h-10 w-10 rounded-full overflow-hidden border border-sidebar-border shadow-xs bg-zinc-800 text-white flex items-center justify-center font-bold text-xs capitalize">
-              {user?.name?.[0] || "U"}
-            </div>
+              </TooltipTrigger>
+              <TooltipContent side="right">Toggle theme</TooltipContent>
+            </Tooltip>
+
+            {/* 2. User Profile Avatar (Collapsed) */}
+            <Tooltip>
+              <TooltipTrigger className="h-10 w-10 rounded-full overflow-hidden border border-sidebar-border shadow-xs bg-zinc-800 text-white flex items-center justify-center font-bold text-xs capitalize cursor-default focus-visible:outline-none">
+                {user?.name?.[0] || "U"}
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                {user?.name || "User Account"}
+              </TooltipContent>
+            </Tooltip>
           </div>
         ) : (
           <div className="flex items-center justify-between w-full px-2 py-1 animate-in fade-in duration-200">
@@ -149,19 +167,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </div>
 
             <div className="flex items-center gap-1">
-              <button
-                onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-                className="relative p-2 text-sidebar-foreground/70 hover:bg-sidebar-hover-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors cursor-pointer"
-              >
-                <Settings className="h-5 w-5 " />
-              </button>
+              {/* 3. Settings Button (Expanded) */}
+              <Tooltip>
+                <TooltipTrigger
+                  onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+                  className="relative p-2 text-sidebar-foreground/70 hover:bg-sidebar-hover-accent hover:text-sidebar-accent-foreground rounded-lg transition-colors cursor-pointer focus-visible:outline-none"
+                >
+                  <Settings className="h-5 w-5" />
+                </TooltipTrigger>
+                <TooltipContent side="top">Settings</TooltipContent>
+              </Tooltip>
 
-              <button
-                onClick={handleLogout}
-                className="p-2 text-sidebar-foreground/50 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors cursor-pointer"
-              >
-                <LogOut className="h-5 w-5" />
-              </button>
+              {/* 4. Logout Button (Expanded) */}
+              <Tooltip>
+                <TooltipTrigger
+                  onClick={handleLogout}
+                  className="p-2 text-sidebar-foreground/50 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors cursor-pointer focus-visible:outline-none"
+                >
+                  <LogOut className="h-5 w-5" />
+                </TooltipTrigger>
+                <TooltipContent side="top">Log out</TooltipContent>
+              </Tooltip>
             </div>
           </div>
         )}
