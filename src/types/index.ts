@@ -55,15 +55,14 @@ export interface Account {
 export interface TransactionCategory {
   id: string;
   name: string;
-  icon?: string;
+  icon: string;
   type: TransactionType;
   isDefault: boolean;
   createdAt: string;
 }
 
 export interface CategoriesResponse {
-  defaultCategories: TransactionCategory[];
-  customCategories: TransactionCategory[];
+  categories: TransactionCategory[];
 }
 
 export interface Transaction {

@@ -17,6 +17,9 @@ export const ENDPOINTS = {
     resetPassword:      '/auth/reset-password',
     sessions:           '/auth/sessions',
     google:             '/auth/google',
+  },
+  categories: {
+    base: '/categories',
   }
 } as const;
 

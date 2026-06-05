@@ -67,7 +67,7 @@ export default function DashboardLayout({
             </div>
 
             <main className="flex-1 overflow-y-auto p-6 md:p-8">
-              <div className="mx-auto">
+              <div className="mx-auto max-w-360">
                 {children}
               </div>
             </main>
