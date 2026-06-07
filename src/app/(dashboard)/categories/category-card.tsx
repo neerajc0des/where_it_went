@@ -1,37 +1,22 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { CategoryIcon } from "./category-icon";
-import { TransactionCategory, TransactionType } from "@/types";
+import { TransactionCategory } from "@/types";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Trash2 } from "lucide-react";
-import React from "react";
-import { CategoryFormDialog } from "./category-form-dialogue";
-import { useFinanceStore } from "@/lib/store/warehouseStore";
-import { toast } from "sonner";
+
 
 interface CategoryCardProps {
     category: TransactionCategory;
     onDelete: (id: string) => void;
+    onCardClick: (category: TransactionCategory) => void;
 }
 
-export const CategoryCard = ({ category, onDelete }: CategoryCardProps) => {
-    const [open, setOpen] = React.useState(false);
-    const updateCategory = useFinanceStore((state) => state.updateCategory);
-
-    const handleUpdateCategory = async (data: { name: string; icon: string; type: TransactionType }) => {
-        try {
-            const res = await updateCategory(category.id, data);
-            if(res)
-                toast.success("Category updated");
-        } catch {
-            toast.error("Failed to update category");
-        }
-    };
-
+export const CategoryCard = ({ category, onDelete, onCardClick }: CategoryCardProps) => {
     return (
         <>
             <Card
-                onClick={() => setOpen(true)}
+                onClick={() => onCardClick(category)}
                 className="cursor-pointer overflow-hidden border border-border/60 hover:bg-secondary hover:border-accent-foreground/20 transition-all shadow-xs"
             >
                 <CardContent className="p-3 flex items-center justify-between">
@@ -65,16 +50,6 @@ export const CategoryCard = ({ category, onDelete }: CategoryCardProps) => {
                     )}
                 </CardContent>
             </Card>
-
-            <CategoryFormDialog
-                open={open}
-                onOpenChange={setOpen}
-                mode="edit"
-                defaultName={category.name}
-                defaultIcon={category.icon}
-                defaultType={category.type}
-                onSubmit={handleUpdateCategory}
-            />
         </>
     );
 };

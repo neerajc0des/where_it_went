@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Icon } from "@iconify/react";
 import { ICON_MAP } from "@/lib/icon-map";
 
