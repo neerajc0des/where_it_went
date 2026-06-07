@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { CategoryIcon } from "./category-icon"; // Path to your helper icon file
 import { cn } from "@/lib/utils";
 import { useFinanceStore } from "@/lib/store/warehouseStore";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { CategoryCard } from "./category-card";
 
 
 export default function CategoriesPage() {
@@ -29,7 +31,7 @@ export default function CategoriesPage() {
       const matchesSearch = category.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesTab = activeTab === "ALL" || category.type === activeTab;
       return matchesSearch && matchesTab;
-    });
+    }).sort((a,b)=>a.name.localeCompare(b.name));
   }, [categories, searchQuery, activeTab]);
 
   const handleCategoryDelete = async ()=>{
@@ -63,48 +65,38 @@ export default function CategoriesPage() {
           </Button>
         </div>
       </div>
-
       {filteredCategories.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-2">
-                {filteredCategories.map((category) => (
-                  <Card key={category.id} className="overflow-hidden border border-border/60 hover:bg-secondary hover:border-accent-foreground/20 cursor-pointer  transition-all shadow-xs">
-                    <CardContent className="p-3 flex items-center justify-between">
-                      <div className="flex items-center gap-3 overflow-hidden">
-                        <div className={cn(
-                          "flex h-12 w-12 shrink-0 items-center justify-center rounded-lg"
-                        )}>
-                          <CategoryIcon name={category.icon} />
-                        </div>
-                        <div className="flex flex-col overflow-hidden text-left">
-                          <span className="truncate text-sm font-medium capitalize text-foreground">
-                            {category.name}
-                          </span>
-                          <span className="text-sm text-muted-foreground capitalize">
-                            {category.type.toLowerCase()}
-                          </span>
-                        </div>
-                      </div>
-      
-                        <div className={category.isDefault ? "cursor-not-allowed" : ""}>
-                          <Button 
-                            disabled={category.isDefault} 
-                            onClick={handleCategoryDelete} 
-                            variant="ghost" 
-                            className="group h-11 w-11 p-0 cursor-pointer disabled:pointer-events-none disabled:opacity-50"
-                          >
-                            <Trash2 className="w-5! h-5! stroke-[2px] stroke-destructive/70 transition-all duration-200 group-hover:fill-destructive/70 group-hover:scale-105" />
-                          </Button>
-                        </div>
-                    </CardContent>
-                  </Card>
+            <div className="flex flex-col gap-6">
+          
+          {filteredCategories.filter(c => c.isDefault).length > 0 && (
+            <div className="flex flex-col gap-3">
+              <h3 className="text-sm font-medium text-muted-foreground px-1">Default Categories</h3>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {filteredCategories.filter(c => c.isDefault).map((category) => (
+                  <CategoryCard key={category.id} category={category} onDelete={handleCategoryDelete} />
                 ))}
               </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-12 text-center border border-dashed rounded-xl border-border">
-          <p className="text-sm text-muted-foreground">No categories found matching your filter criteria.</p>
+            </div>
+          )}
+
+          {filteredCategories.filter(c => !c.isDefault).length > 0 && (
+            <div className="flex flex-col gap-3">
+              <h3 className="text-sm font-medium text-muted-foreground px-1">My Categories</h3>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {filteredCategories.filter(c => !c.isDefault).map((category) => (
+                  <CategoryCard key={category.id} category={category} onDelete={handleCategoryDelete} />
+                ))}
+              </div>
+            </div>
+          )}
+
         </div>
-      )}
-      
-    </div>
-  );
-}
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center border border-dashed rounded-xl border-border">
+                <p className="text-sm text-muted-foreground">No categories found matching your filter criteria.</p>
+              </div>
+            )}
+            
+          </div>
+        );
+      }

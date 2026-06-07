@@ -52,7 +52,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     window.location.href = "/login"; // Hard reload breaks Next.js client-cache safely
   };
 
-  // Nav items mapped to your exact folder layout structure
   const navigation = [
     { name: "Overview", href: "/overview", icon: LayoutDashboard },
     { name: "Transactions", href: "/transactions", icon: ArrowLeftRight },
@@ -66,7 +65,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar className={cn(
        "transition-colors duration-200", "border-none",
        isCollapsed && "md:bg-background [&_[data-sidebar=sidebar]]:bg-background")} collapsible="icon" {...props}>
-      {/* ================= HEADER BRANDING ================= */}
       <SidebarHeader className="h-14 justify-end md:justify-center  px-4">
         <div className="flex items-center justify-between font-semibold text-sidebar-foreground">
           
@@ -127,7 +125,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter className="p-3">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-4 py-2">
-            {/* 1. Theme Toggle (Collapsed) */}
             <Tooltip>
               <TooltipTrigger
                 onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
@@ -142,7 +139,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <TooltipContent side="right">Toggle theme</TooltipContent>
             </Tooltip>
 
-            {/* 2. User Profile Avatar (Collapsed) */}
             <Tooltip>
               <TooltipTrigger className="h-10 w-10 rounded-full overflow-hidden border border-sidebar-border shadow-xs bg-zinc-800 text-white flex items-center justify-center font-bold text-xs capitalize cursor-default focus-visible:outline-none">
                 {user?.name?.[0] || "U"}
@@ -154,7 +150,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </div>
         ) : (
           <div className="flex items-center justify-between w-full px-2 py-1 animate-in fade-in duration-200">
-            {/* Left Block: User Identity Card */}
             <div className="flex items-center gap-3 overflow-hidden">
               <div className="h-7 w-7 shrink-0 rounded-full overflow-hidden border border-sidebar-border shadow-xs bg-zinc-800 text-white flex items-center justify-center font-bold text-xs capitalize">
                 {user?.name?.[0] || "U"}
@@ -167,7 +162,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </div>
 
             <div className="flex items-center gap-1">
-              {/* 3. Settings Button (Expanded) */}
               <Tooltip>
                 <TooltipTrigger
                   onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
@@ -178,7 +172,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <TooltipContent side="top">Settings</TooltipContent>
               </Tooltip>
 
-              {/* 4. Logout Button (Expanded) */}
               <Tooltip>
                 <TooltipTrigger
                   onClick={handleLogout}
