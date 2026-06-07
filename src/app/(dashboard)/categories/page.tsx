@@ -47,9 +47,6 @@ export default function CategoriesPage() {
     setDialogOpen(true);
   };
 
-  const handleCategoryDelete = async () => {
-    console.log("hello")
-  }
 
   const handleAddClick = () => {
     setSelectedCategory(null);  
@@ -79,6 +76,17 @@ export default function CategoriesPage() {
     }
   };
 
+  const handleDeleteCategory = async (id: string) => {
+    if (!selectedCategory) return;
+    try {
+      const res = await deleteCategory(id);
+      if (res)
+        toast.success("Category deleted successfully");
+    } catch {
+      toast.error("Failed to delete category");
+    }
+  };
+
   const handleSubmit = async (data: { name: string; icon: string; type: TransactionType }) => {
     if (selectedCategory) {
       await handleUpdateCategory(data);
@@ -86,6 +94,8 @@ export default function CategoriesPage() {
       await handleCreateCategory(data);
     }
   };
+
+
 
 
   return (
@@ -124,7 +134,7 @@ export default function CategoriesPage() {
                 <h3 className="text-sm font-medium text-muted-foreground px-1">Default Categories</h3>
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   {filteredCategories.filter(c => c.isDefault).map((category) => (
-                    <CategoryCard key={category.id} category={category} onDelete={handleCategoryDelete} onCardClick={handleCardClick} />
+                    <CategoryCard key={category.id} category={category} onDelete={handleDeleteCategory} onCardClick={handleCardClick} />
                   ))}
                 </div>
               </div>
@@ -135,7 +145,7 @@ export default function CategoriesPage() {
                 <h3 className="text-sm font-medium text-muted-foreground px-1">My Categories</h3>
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   {filteredCategories.filter(c => !c.isDefault).map((category) => (
-                    <CategoryCard key={category.id} category={category} onDelete={handleCategoryDelete} onCardClick={handleCardClick} />
+                    <CategoryCard key={category.id} category={category} onDelete={handleDeleteCategory} onCardClick={handleCardClick} />
                   ))}
                 </div>
               </div>
