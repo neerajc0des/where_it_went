@@ -4,6 +4,7 @@ export const ICON_MAP: Record<string, string> = {
   "wallet": "streamline-kameleon-color:wallet",
   "investments": "streamline-kameleon-color:money-graph",
   "bank": "streamline-kameleon-color:bank",
+  "cash": "streamline-kameleon-color:bank",
   "card": "streamline-kameleon-color:credit-card-3",
   "smartphone": "streamline-kameleon-color:smartphone-qrcode",
   "locker": "streamline-kameleon-color:lockers",

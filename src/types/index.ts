@@ -44,8 +44,8 @@ export interface Session {
 export interface Account {
   id: string;
   name: string;
-  type: AccountType;
-  balance: string;
+  icon: string;
+  balance: number;
   monthlyBudget?: string;
   isArchived: boolean;
   createdAt: string;
@@ -71,7 +71,7 @@ export interface Transaction {
   type: TransactionType;
   categoryId: string;
   category: Pick<TransactionCategory, 'id' | 'name' | 'icon' | 'type'>;
-  account: Pick<Account, 'id' | 'name' | 'type'>;
+  account: Pick<Account, 'id' | 'name'>;
   merchant?: string;
   note?: string;
   date: string;

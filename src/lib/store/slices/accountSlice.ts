@@ -2,6 +2,8 @@ import { StateCreator } from "zustand";
 import { FinanceStore } from "../warehouseStore";
 import api from "@/lib/api";
 import { ApiResponse, Account } from "@/types";
+import { useAuthStore } from "../authStore";
+import { ENDPOINTS } from "@/lib/constants";
 
 export interface AccountSlice {
   accounts: Account[];
@@ -15,7 +17,12 @@ export const createAccountSlice: StateCreator<FinanceStore, [], [], AccountSlice
   fetchAccounts: async () => {
     set({ isAccountsLoading: true });
     try {
-        const response = await api.get<ApiResponse<Account[]>>("/accounts");
+        const token = useAuthStore.getState().accessToken;
+        const response = await api.get(`${ENDPOINTS.accounts.base}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         set({ accounts: response.data.data });
     } catch (error) {
         console.error("Failed to fetch accounts:", error);

@@ -20,6 +20,9 @@ export const ENDPOINTS = {
   },
   categories: {
     base: '/categories',
+  },
+  accounts: {
+    base: '/accounts',
   }
 } as const;
 
