@@ -14,6 +14,7 @@ import {
 
 interface DeleteDialogProps {
   open: boolean;
+  disableWhen: boolean;
   onOpenChange: (open: boolean) => void;
   itemName: string;
   dialogDesc: string;
@@ -22,6 +23,7 @@ interface DeleteDialogProps {
 
 export const DeleteConfirmationDialog = ({
   open,
+  disableWhen,
   onOpenChange,
   itemName,
   dialogDesc,
@@ -40,6 +42,7 @@ export const DeleteConfirmationDialog = ({
           <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
+            disabled={disableWhen}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"
           >
             Delete

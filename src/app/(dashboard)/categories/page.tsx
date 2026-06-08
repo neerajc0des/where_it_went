@@ -26,6 +26,8 @@ export default function CategoriesPage() {
   const createCategory = useFinanceStore((state) => state.createCategory);
   const updateCategory = useFinanceStore((state) => state.updateCategory);
   const deleteCategory = useFinanceStore((state) => state.deleteCategory);
+  const isCategoriesLoading = useFinanceStore((state)=> state.isCategoriesLoading)
+
 
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [categoryToDelete, setCategoryToDelete] = React.useState<TransactionCategory | null>(null);
@@ -180,6 +182,7 @@ export default function CategoriesPage() {
       />
       <DeleteConfirmationDialog
         open={deleteDialogOpen}
+        disableWhen={isCategoriesLoading}
         onOpenChange={setDeleteDialogOpen}
         itemName={categoryToDelete?.name ?? ""}
         dialogDesc="This will permanently delete this category. Any transactions using it will also get deleted."
