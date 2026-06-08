@@ -16,6 +16,7 @@ export const CategoryCard = ({ category, onDelete, onCardClick }: CategoryCardPr
     return (
         <>
             <Card
+                data-category-name={category.name.toLowerCase()}
                 onClick={() => onCardClick(category)}
                 className="cursor-pointer overflow-hidden border border-border/60 hover:bg-secondary hover:border-accent-foreground/20 transition-all shadow-xs"
             >
@@ -37,7 +38,10 @@ export const CategoryCard = ({ category, onDelete, onCardClick }: CategoryCardPr
                     {!category.isDefault && (
                         <Tooltip>
                             <TooltipTrigger
-                                onClick={()=>onDelete(category.id)}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete(category.id);
+                                }}
                                 className="p-2 text-sidebar-foreground/70 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors cursor-pointer focus-visible:outline-none"
                             >
                                 <Trash2 className="h-5 w-5" />

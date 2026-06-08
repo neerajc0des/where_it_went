@@ -4,6 +4,7 @@ import { TransactionCategory } from "@/types";
 import { FinanceStore } from "../warehouseStore";
 import { StateCreator } from "zustand";
 import { useAuthStore } from "../authStore";
+import axios from "axios";
 
 export interface CategorySlice {
     defaultCategories: TransactionCategory[];
@@ -63,9 +64,12 @@ export const createCategorySlice: StateCreator<FinanceStore, [], [], CategorySli
                 categories: [...state.categories, newCategory],
             }));
             return true;
+
         } catch (error) {
-            console.error("Failed to create category:", error);
-            return false;
+            if (axios.isAxiosError(error)) {
+                throw new Error(error.response?.data?.message || "Failed to create category");
+            }
+            throw new Error("Failed to create category");
         } finally {
             set({ isCategoriesLoading: false });
         }
@@ -94,8 +98,10 @@ export const createCategorySlice: StateCreator<FinanceStore, [], [], CategorySli
 
             return true;
         } catch (error) {
-            console.error("Failed to update category:", error);
-            return false;
+            if (axios.isAxiosError(error)) {
+                throw new Error(error.response?.data?.message || "Failed to update category");
+            }
+            throw new Error("Failed to create category");
         } finally {
             set({ isCategoriesLoading: false });
         }
@@ -115,12 +121,14 @@ export const createCategorySlice: StateCreator<FinanceStore, [], [], CategorySli
                 customCategories: state.customCategories.filter((c) => c.id !== id),
                 categories: state.categories.filter((c) => c.id !== id),
             }));
-            
+
             return true;
 
         } catch (error) {
-            console.error("Failed to delete category:", error);
-            return false;
+            if (axios.isAxiosError(error)) {
+                throw new Error(error.response?.data?.message || "Failed to delete category");
+            }
+            throw new Error("Failed to create category");
         } finally {
             set({ isCategoriesLoading: false });
         }

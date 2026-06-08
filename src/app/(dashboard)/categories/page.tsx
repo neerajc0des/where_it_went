@@ -10,6 +10,8 @@ import { CategoryCard } from "./category-card";
 import { toast } from "sonner";
 import { TransactionCategory, TransactionType } from "@/types";
 import { CategoryFormDialog } from "./category-form-dialogue";
+import { highlightElement } from "@/lib/utils";
+import { DeleteConfirmationDialog } from "@/components/delete-confirmation-modal";
 
 
 export default function CategoriesPage() {
@@ -24,6 +26,9 @@ export default function CategoriesPage() {
   const createCategory = useFinanceStore((state) => state.createCategory);
   const updateCategory = useFinanceStore((state) => state.updateCategory);
   const deleteCategory = useFinanceStore((state) => state.deleteCategory);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [categoryToDelete, setCategoryToDelete] = React.useState<TransactionCategory | null>(null);
 
   React.useEffect(() => {
     fetchCategories();
@@ -47,12 +52,6 @@ export default function CategoriesPage() {
     setDialogOpen(true);
   };
 
-
-  const handleAddClick = () => {
-    setSelectedCategory(null);  
-    setDialogOpen(true);
-  };
-
   const handleCreateCategory = async (data: { name: string; icon: string; type: TransactionType; isDefault?: boolean }) => {
     try {
       data = { ...data, isDefault: false }
@@ -60,8 +59,13 @@ export default function CategoriesPage() {
 
       if (res)
         toast.success("Category created successfully");
-    } catch {
-      toast.error("Failed to create category");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create category");
+      if (error.message == "You already have a category with this name")
+        setSearchQuery("");
+      setTimeout(() => {
+        highlightElement(`[data-category-name="${data.name.toLowerCase()}"]`);
+      }, 100);
     }
   };
 
@@ -76,14 +80,22 @@ export default function CategoriesPage() {
     }
   };
 
-  const handleDeleteCategory = async (id: string) => {
-    if (!selectedCategory) return;
+  const handleDeleteClick = (category: TransactionCategory) => {
+    setCategoryToDelete(category);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteCategory = async () => {
+    if (!categoryToDelete) return;
     try {
-      const res = await deleteCategory(id);
+      const res = await deleteCategory(categoryToDelete.id);
       if (res)
         toast.success("Category deleted successfully");
     } catch {
       toast.error("Failed to delete category");
+    } finally {
+      setDeleteDialogOpen(false);
+      setCategoryToDelete(null);
     }
   };
 
@@ -94,8 +106,6 @@ export default function CategoriesPage() {
       await handleCreateCategory(data);
     }
   };
-
-
 
 
   return (
@@ -134,7 +144,7 @@ export default function CategoriesPage() {
                 <h3 className="text-sm font-medium text-muted-foreground px-1">Default Categories</h3>
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   {filteredCategories.filter(c => c.isDefault).map((category) => (
-                    <CategoryCard key={category.id} category={category} onDelete={handleDeleteCategory} onCardClick={handleCardClick} />
+                    <CategoryCard key={category.id} category={category} onDelete={() => handleDeleteClick(category)} onCardClick={handleCardClick} />
                   ))}
                 </div>
               </div>
@@ -145,7 +155,7 @@ export default function CategoriesPage() {
                 <h3 className="text-sm font-medium text-muted-foreground px-1">My Categories</h3>
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                   {filteredCategories.filter(c => !c.isDefault).map((category) => (
-                    <CategoryCard key={category.id} category={category} onDelete={handleDeleteCategory} onCardClick={handleCardClick} />
+                    <CategoryCard key={category.id} category={category} onDelete={() => handleDeleteClick(category)} onCardClick={handleCardClick} />
                   ))}
                 </div>
               </div>
@@ -167,6 +177,13 @@ export default function CategoriesPage() {
         defaultIcon={selectedCategory?.icon}
         defaultType={selectedCategory?.type}
         onSubmit={handleSubmit}
+      />
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        itemName={categoryToDelete?.name ?? ""}
+        dialogDesc="This will permanently delete this category. Any transactions using it will also get deleted."
+        onConfirm={handleDeleteCategory}
       />
     </>
   );
